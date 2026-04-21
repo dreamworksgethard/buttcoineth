@@ -55,6 +55,10 @@
       <li><a href="#how-to-buy" class="mobile-link">How to Buy</a></li>
       <li><a href="#live" class="mobile-link">Live Chart</a></li>
       <li><a href="#community" class="mobile-link">Community</a></li>
+      <li>
+        <a href="https://app.uniswap.org/swap?outputCurrency=0xB5B2a1DBF9109d7d2E2504cD6CDD10e6287D926B&chain=mainnet"
+           target="_blank" rel="noopener" class="mobile-link mobile-buy-link">Buy $BUTTCOIN</a>
+      </li>
     </ul>
   </div>
 
@@ -525,16 +529,24 @@
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
     // ─── Nav scroll style + active section highlight ───
+    const nav = document.querySelector('.nav');
     const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
     const sections = [...navLinks].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
 
-    window.addEventListener('scroll', () => {
-      document.querySelector('.nav').style.background =
-        window.scrollY > 40 ? 'rgba(10,10,10,0.97)' : 'rgba(10,10,10,0.85)';
+    let lastScrollY = window.scrollY;
 
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+
+      // Background opacity
+      nav.style.background = y > 40 ? 'rgba(10,10,10,0.97)' : 'rgba(10,10,10,0.85)';
+
+      lastScrollY = y;
+
+      // Active section highlight
       let current = '';
       sections.forEach(sec => {
-        if (window.scrollY >= sec.offsetTop - 120) current = '#' + sec.id;
+        if (y >= sec.offsetTop - 120) current = '#' + sec.id;
       });
       navLinks.forEach(a => {
         a.classList.toggle('nav-active', a.getAttribute('href') === current);
@@ -548,16 +560,18 @@
       scrollBar.style.width = (window.scrollY / max * 100) + '%';
     }, { passive: true });
 
-    // ─── Parallax ───
+    // ─── Parallax (desktop only) ───
     const heroLogo = document.querySelector('.hero-logo-wrap');
     const heroBgText = document.querySelector('.hero-bg-text');
     const heroContent = document.querySelector('.hero-content');
-    window.addEventListener('scroll', () => {
-      const y = window.scrollY;
-      if (heroLogo)    heroLogo.style.transform    = `translateY(${y * 0.18}px)`;
-      if (heroBgText)  heroBgText.style.transform  = `translate(-50%, calc(-50% + ${y * 0.08}px)) rotate(-15deg)`;
-      if (heroContent) heroContent.style.transform = `translateY(${y * 0.1}px)`;
-    }, { passive: true });
+    if (window.innerWidth > 768) {
+      window.addEventListener('scroll', () => {
+        const y = window.scrollY;
+        if (heroLogo)    heroLogo.style.transform    = `translateY(${y * 0.18}px)`;
+        if (heroBgText)  heroBgText.style.transform  = `translate(-50%, calc(-50% + ${y * 0.08}px)) rotate(-15deg)`;
+        if (heroContent) heroContent.style.transform = `translateY(${y * 0.1}px)`;
+      }, { passive: true });
+    }
 
     // ─── Enhanced Reveal (supports reveal, reveal-left, reveal-right, reveal-scale) ───
     const revealObs = new IntersectionObserver(entries => {
